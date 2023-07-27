@@ -1,0 +1,17 @@
+{
+  "name": "my-weather-app",
+  "version": "1.0.0",
+  "description": "A simple weather app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Roqaya",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {},
+  "keywords": []
+}
