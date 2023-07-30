@@ -7,7 +7,7 @@ const port = 3000;
 // Middleware to enable CORS for all routes
 app.use(cors());
 app.use(express.json());
-app.use(express.static('website'));
+
 // JavaScript Object to act as the app API endpoint
 let projectData = {};
 
@@ -27,5 +27,3 @@ app.post('/data', (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
-

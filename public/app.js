@@ -1,9 +1,11 @@
 // API credentials
 const apiKey = 'fdd866ab888116ae211293e5a329e01d&units=imperial';
 
-// Function to make a GET request to the server endpoint
-async function fetchServerData() {
-  const response = await fetch('/data');
+// Function to make a GET request to the OpenWeatherMap API
+async function fetchWeatherData(zipCode) {
+  const baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
+  const url = `${baseUrl}?zip=${zipCode}&appid=${apiKey}`;
+  const response = await fetch(url);
   const data = await response.json();
   return data;
 }
@@ -42,37 +44,31 @@ function updateWeatherUI(weatherData) {
 // Function to get user input from a form (you can customize this based on your UI)
 function getUserResponse() {
   // For example, if you have a form with an input field with id "user-input"
-  const userInput = document.getElementById('zip').value;
+  const userInput = document.getElementById('user-input').value;
   return userInput;
 }
 
 // Event listener for the button click
 const button = document.getElementById('generate');
 button.addEventListener('click', async () => {
-  const zipCode = getUserResponse(); // Get user input (zip code)
+  const zipCode = document.getElementById('zip').value; // Get user input (zip code)
 
   // Fetch weather data from the OpenWeatherMap API
-  const baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
-  const url = `${baseUrl}?zip=${zipCode}&appid=${apiKey}`;
-  const weatherData = await fetch(url).then(response => response.json());
-
-  // Fetch data from the server endpoint
-  const serverData = await fetchServerData();
+  const weatherData = await fetchWeatherData(zipCode);
 
   // Combine API data and user response to send to the server endpoint
   const dataToSend = {
     temperature: weatherData.main.temp,
     date: new Date().toLocaleDateString(),
     userResponse: getUserResponse(),
-    ...serverData, // Optionally include existing data from the server
   };
 
   // POST data to the server endpoint
   const postUrl = '/data';
   postDataToServer(postUrl, dataToSend);
 
-  // Update the UI with the fetched data
-  updateWeatherUI(weatherData);
+  // Call retrieveData function to update the UI with the fetched data
+  retrieveData();
 });
 
 // Function to GET Project Data and update the UI
@@ -83,7 +79,9 @@ const retrieveData = async () => {
     console.log(allData);
 
     // Update existing DOM elements with the fetched data
-    document.getElementById('temperature').innerHTML = `Temperature: ${Math.round(allData.temperature)} °F`;
+    document.getElementById('temperature').innerHTML = `Temperature: ${Math.round(
+      allData.temperature
+    )} °F`;
     document.getElementById('date').innerHTML = `Date: ${allData.date}`;
     document.getElementById('user-response').innerHTML = `User Response: ${allData.userResponse}`;
   } catch (error) {
@@ -92,5 +90,5 @@ const retrieveData = async () => {
   }
 };
 
-// Call retrieveData to update the UI with the initial data
-retrieveData();
+// Call the retrieveData function to update the UI with the initial data when the page loads
+document.addEventListener('DOMContentLoaded', retrieveData);
